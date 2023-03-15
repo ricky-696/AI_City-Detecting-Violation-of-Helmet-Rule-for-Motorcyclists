@@ -32,5 +32,4 @@
 
 
 ## Resnet's Loss & Accuracy
-![](resnet_helmet/resnet50_train_loss.jpg)
-![](resnet_helmet/resnet50_train_acc.jpg)
+![](Pic/resnet_result.png)

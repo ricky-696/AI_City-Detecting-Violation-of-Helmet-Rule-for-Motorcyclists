@@ -45,4 +45,5 @@ AI City: Detecting Violation of Helmet Rule for Motorcyclists
 ## ToDo
 
 - [ ] Upload pretrain weights
+- [ ] Write quick start guide
 - [ ] Wrap the code into command-line parameters for direct execution in the command line.

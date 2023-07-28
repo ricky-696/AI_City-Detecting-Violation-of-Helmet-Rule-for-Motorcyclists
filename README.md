@@ -1,17 +1,21 @@
 # AI City: Detecting Violation of Helmet Rule for Motorcyclists
 
-[2023 AI CITY CHALLENGE](https://www.aicitychallenge.org/) 
+[2023 AI CITY CHALLENGE](https://www.aicitychallenge.org/)
 
-## Model Architecture
+Challenge Track 5: Detecting Violation of Helmet Rule for Motorcyclists
+
+Motorcycles are one of the most popular modes of transportation, particularly in developing countries such as India. Due to lesser protection compared to cars and other standard vehicles, motorcycle riders are exposed to a greater risk of crashes. Therefore, wearing helmets for motorcycle riders is mandatory as per traffic rules and automatic detection of motorcyclists without helmets is one of the critical tasks to enforce strict regulatory traffic safety measures. 
+
+# Model Architecture
 ![](Pic/Model_Architecure.png)
 
-## Two_Stage YOLOv8
+# Two_Stage YOLOv8
 ![](Pic/2_Stage_Yolo.png)
 
-## Driver Passenger Algorithm
+# Driver Passenger Algorithm
 ![](Pic/DP_algo.png)
 
-## File Tree
+# File Tree
 
 ```
 AI City: Detecting Violation of Helmet Rule for Motorcyclists
@@ -39,10 +43,10 @@ AI City: Detecting Violation of Helmet Rule for Motorcyclists
 ```
 
 
-## Resnet's Loss & Accuracy
+# Resnet's Loss & Accuracy
 ![](Pic/resnet_result.png)
 
-## ToDo
+# ToDo
 
 - [ ] Upload pretrain weights
 - [ ] Write quick start guide

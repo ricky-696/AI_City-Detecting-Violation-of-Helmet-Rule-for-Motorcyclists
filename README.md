@@ -9,7 +9,7 @@ Motorcycles are one of the most popular modes of transportation, particularly in
 # Model Architecture
 ![](Pic/Model_Architecure.png)
 
-# Two_Stage YOLOv8
+# Two_Stage + Special YOLOv8
 ![](Pic/2_Stage_Yolo.png)
 
 # Driver Passenger Algorithm

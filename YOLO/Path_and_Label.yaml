@@ -1,0 +1,8 @@
+path: '/mnt/Nami/2023_AI_City_challenge_datasets/Track_5/Frame/'
+train: 'train'
+val: 'valid'
+test: 'test'
+# class names
+names: 
+  0: 'motorbike'
+  1: 'person'

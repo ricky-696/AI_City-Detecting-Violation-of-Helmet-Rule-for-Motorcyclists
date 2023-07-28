@@ -11,6 +11,15 @@ from torchvision.transforms import transforms
 import torchvision.transforms.functional as TF
 from torchvision import utils as vutils
 
+
+data_augmentation = transforms.Compose([
+    transforms.RandomHorizontalFlip(p = 0.5),
+    transforms.ColorJitter(brightness = (0.9, 1.1), contrast = (0.9, 1.1), 
+                           saturation = (0.9, 1.1), hue = (-0.05, 0.05)),
+    transforms.GaussianBlur(kernel_size = (5, 5), sigma = (0.1, 2.0))
+])
+
+
 # Define a dataset
 class ImageDataset(torch.utils.data.Dataset):
     def __init__(self, img, label):
@@ -20,8 +29,10 @@ class ImageDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         img = self.to_tensor(self.img[index])
-        angle = random.choice([90, 180, 270])
-        img = TF.rotate(img, angle)
+        # rand = random.randint(1, 2)
+        # if rand == 1:
+        img = data_augmentation(img)
+            
         return img, self.label[index]
 
     def __len__(self):
@@ -33,12 +44,12 @@ class TestDataset(torch.utils.data.Dataset):
         self.to_tensor = torchvision.transforms.ToTensor()
 
     def __getitem__(self, index):
-        return self.to_tensor(self.img[index])
+        return self.to_tensor(self.img)
 
     def __len__(self):
-        return len(self.img)
+        return 1
 
-def read_image_folder(resize_shape, image_folder):
+def read_image_folder(resize_shape, image_folder, tqdm_show):
     resize = torchvision.transforms.Resize(resize_shape)
     image_folder = ImageFolder(image_folder, transform=resize)
 
@@ -55,7 +66,7 @@ def read_image_folder(resize_shape, image_folder):
     labels = np.zeros([data_length], dtype=np.int64)
 
     i = 0
-    for image, label in tqdm(image_folder, desc="Reading Images"):
+    for image, label in tqdm(image_folder, desc = tqdm_show):
         data[i] = np.array(image)
         labels[i] = label
         i += 1
@@ -72,7 +83,7 @@ def read_test_img(resize_shape, path):
     img_name = []
     for filename in tqdm(os.listdir(path)):
         img_name.append(filename)
-        img = Image.open("./test/{}".format(filename)).convert('RGB')
+        img = Image.open(str(path) + "/{}".format(filename)).convert('RGB')
         img = resize(img)
         img = np.array(img)
         data_img.append(img)

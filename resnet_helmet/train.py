@@ -1,5 +1,5 @@
 import load_data
-from Resnet import resnet_50
+from Resnet_NF import resnet_152
 
 import cv2
 import matplotlib.pyplot as plt
@@ -16,7 +16,9 @@ train_acc = []
 val_loss = []
 val_acc = []
 train_epoch = []
-epoch_n = 50
+epoch_n = 100
+val_best_loss = 999
+model_name = 'resnet152_dropout'
 
 def train(model, device, train_loader, optimizer, epoch):
     model.train()
@@ -69,6 +71,10 @@ def test(model, device, test_loader):
 
     test_loss /= len(test_loader.dataset)
     acc = round(correct / len(test_loader.dataset), 4)
+
+    if test_loss < val_best_loss:
+        torch.save(model.state_dict(), model_name + '.pt')
+
     val_loss.append(test_loss)
     val_acc.append(acc)
     print('\r\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
@@ -86,21 +92,22 @@ def draw(title, xlabel, ylabel, x, y1, y2, filename):
     plt.savefig(filename)
 
 def main():
-    data_path = '/mnt/Nami/2023_AI_City_challenge_datasets/Track_5/Helmet_Datasets'
-    train_dict, train_info_dict = load_data.read_image_folder((224, 224), data_path)
-    whole_dataset = load_data.ImageDataset(train_dict["data"], train_dict["labels"])
-    
-    # Random split
-    train_set_size = int(len(whole_dataset) * 0.8)
-    valid_set_size = len(whole_dataset) - train_set_size
-    train_set, valid_set = data.random_split(whole_dataset, [train_set_size, valid_set_size])
+    img_w, img_h = 224, 224
+    train_path = '/mnt/Nami/2023_AI_City_challenge_datasets/Track_5/Helmet_Datasets/train'
+    valid_path = '/mnt/Nami/2023_AI_City_challenge_datasets/Track_5/Helmet_Datasets/valid'
 
-    train_loader = torch.utils.data.DataLoader(train_set, batch_size = 32, shuffle=True)
-    valid_loader = torch.utils.data.DataLoader(valid_set, batch_size = 32)
+    train_dict, train_info_dict = load_data.read_image_folder((img_w, img_h), train_path, 'Train Img')
+    train_set = load_data.ImageDataset(train_dict["data"], train_dict["labels"])
+    
+    valid_dict, valid_info_dict = load_data.read_image_folder((img_w, img_h), valid_path, 'Test Img')
+    valid_set = load_data.ImageDataset(valid_dict["data"], valid_dict["labels"])
+    
+    train_loader = torch.utils.data.DataLoader(train_set, batch_size = 64, shuffle = True)
+    valid_loader = torch.utils.data.DataLoader(valid_set, batch_size = 64)
 
     with torch.cuda.device(device_num):
-        model = resnet_50(num_classes = 2).cuda()
-        adam = torch.optim.Adam(model.parameters(), lr = 1e-5)
+        model = resnet_152(num_classes = 2).cuda()
+        adam = torch.optim.Adam(model.parameters(), lr = 1e-4)
 
         for epoch in range(1, epoch_n + 1):
             train_epoch.append(epoch)
@@ -108,9 +115,9 @@ def main():
             test(model, device_num, valid_loader)
 
         #print loss graph
-        draw('train loss', 'epoch', 'loss', train_epoch, train_loss, val_loss,'resnet50_train_loss.jpg')
-        draw('train accuracy', 'epoch', 'accuracy', train_epoch, train_acc, val_acc,'resnet50_train_acc.jpg')
-        torch.save(model.state_dict(), 'resnet50.pt')
+        draw('train loss', 'epoch', 'loss', train_epoch, train_loss, val_loss, model_name + '_train_loss.jpg')
+        draw('train accuracy', 'epoch', 'accuracy', train_epoch, train_acc, val_acc, model_name + '_train_acc.jpg')
+        torch.save(model.state_dict(), model_name + '.pt')
 
 if __name__ == "__main__":
     main()
